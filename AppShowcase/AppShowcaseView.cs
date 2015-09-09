@@ -9,6 +9,7 @@ using Android.Util;
 
 using AppExtras.ShowcaseAnimations;
 using AppExtras.Showcases;
+using Android.Animation;
 
 namespace AppExtras
 {
@@ -26,6 +27,8 @@ namespace AppExtras
         private int mContentBottomMargin;
         private int mContentTopMargin;
         private IAnimationFactory animationFactory;
+        private ValueAnimator fadeInValueAnimator;
+        private ValueAnimator fadeOutValueAnimator;
 
         private Handler mHandler;
         private LayoutListener layoutListener;
@@ -60,11 +63,12 @@ namespace AppExtras
         private void Setup(Context context)
         {
             mHandler = new Handler();
+            AnimateInitialStep = true;
 
             SetWillNotDraw(false);
 
             // create our animation factory
-            animationFactory = new AnimationFactory();
+            animationFactory = new FadeAnimationFactory();
 
             // make sure we add a global layout listener so we can adapt to changes
             AttachLayoutListener();
@@ -92,6 +96,8 @@ namespace AppExtras
         }
 
         public bool AutoRemoveOnCompletion { get; set; }
+
+        public bool AnimateInitialStep { get; set; }
 
         public Showcase CurrentShowcase
         {
@@ -150,8 +156,13 @@ namespace AppExtras
             oldWidth = width;
             oldHeight = height;
 
+            // clear canvas
+            maskCanvas.DrawColor(Color.Transparent, PorterDuff.Mode.Clear);
+
             // ask the animator to draw the mask
-            animationFactory.DrawMask(this, maskCanvas, CurrentStep.MaskColor, CurrentStep.Position, CurrentStep.Radius);
+            float? fadeInValue = fadeInValueAnimator != null ? (float?)fadeInValueAnimator.AnimatedValue : null;
+            float? fadeOutValue = fadeOutValueAnimator != null ? (float?)fadeOutValueAnimator.AnimatedValue : null;
+            animationFactory.DrawMask(this, maskCanvas, CurrentStep.MaskColor, CurrentStep.Position, CurrentStep.Radius, fadeInValue, fadeOutValue);
 
             // Draw the bitmap on our views  canvas.
             canvas.DrawBitmap(maskBitmap, 0, 0, null);
@@ -241,7 +252,7 @@ namespace AppExtras
             // instead of showing the user everything from the start
             CurrentShowcase.LastStep(Context);
 
-            return ShowNext();
+            return ShowNext(AnimateInitialStep);
         }
 
         public void DismissStep()
@@ -260,23 +271,32 @@ namespace AppExtras
         {
             Visibility = ViewStates.Invisible;
 
-            animationFactory.FadeInView(this, CurrentStep.FadeInDuration, () =>
+            fadeInValueAnimator = animationFactory.FadeInView(this, CurrentStep.FadeInDuration, () =>
             {
                 Visibility = ViewStates.Visible;
                 OnShowcaseDisplayed();
+            }, () =>
+            {
+                fadeInValueAnimator = null;
             });
         }
 
         public void FadeOut()
         {
-            animationFactory.FadeOutView(this, CurrentStep.FadeOutDuration, () =>
+            fadeOutValueAnimator = animationFactory.FadeOutView(this, CurrentStep.FadeOutDuration, null, () =>
             {
+                fadeOutValueAnimator = null;
                 Visibility = ViewStates.Invisible;
                 ShowNext();
             });
         }
 
         public bool ShowNext()
+        {
+            return ShowNext(true);
+        }
+
+        private bool ShowNext(bool animate)
         {
             var next = CurrentShowcase.NextStep(Context);
             if (next != null)
@@ -288,16 +308,16 @@ namespace AppExtras
 
                 LayoutShowcaseContent();
 
-                if (CurrentStep.Delay > 0)
+                if (CurrentStep.Delay > 0 && animate)
                 {
                     mHandler.PostDelayed(() =>
                     {
-                        ShowCurrentStep();
+                        ShowCurrentStep(animate);
                     }, CurrentStep.Delay);
                 }
                 else
                 {
-                    ShowCurrentStep();
+                    ShowCurrentStep(animate);
                 }
 
                 return true;
@@ -316,9 +336,9 @@ namespace AppExtras
             }
         }
 
-        private void ShowCurrentStep()
+        private void ShowCurrentStep(bool animate)
         {
-            if (CurrentStep.FadeInDuration > 0)
+            if (CurrentStep.FadeInDuration > 0 && animate)
             {
                 FadeIn();
             }

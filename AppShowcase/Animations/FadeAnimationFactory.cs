@@ -5,24 +5,24 @@ using Android.Views;
 
 namespace AppExtras.ShowcaseAnimations
 {
-    public class NullAnimationFactory : IAnimationFactory
+    public class FadeAnimationFactory : IAnimationFactory
     {
         private readonly Paint eraserPaint;
 
-        public NullAnimationFactory()
+        public FadeAnimationFactory()
         {
             eraserPaint = AnimationFactoryHelpers.CreateEraser();
         }
 
         public ValueAnimator FadeInView(View target, long duration, Action started, Action ended)
         {
-            AnimationFactoryHelpers.SetAlphaProperty(target, true, started, ended);
+            AnimationFactoryHelpers.AnimateAlphaProperty(target, duration, true, started, ended);
             return null;
         }
 
         public ValueAnimator FadeOutView(View target, long duration, Action started, Action ended)
         {
-            AnimationFactoryHelpers.SetAlphaProperty(target, false, started, ended);
+            AnimationFactoryHelpers.AnimateAlphaProperty(target, duration, false, started, ended);
             return null;
         }
 

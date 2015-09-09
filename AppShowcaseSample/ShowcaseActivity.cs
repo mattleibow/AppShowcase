@@ -48,15 +48,15 @@ namespace AppShowcaseSample
                 Toast.MakeText(this, "Showcase reset", ToastLength.Short).Show();
             };
 
-            PresentShowcaseShowcase();
+            PresentShowcaseShowcase(true);
         }
 
-        private void PresentShowcaseShowcase()
+        private void PresentShowcaseShowcase(bool initial = false)
         {
             var showcase = new Showcase();
             showcase.ShowcaseId = SHOWCASE_ID;
             var step1 = showcase.AddStep(mButtonOne, "This is button one", "GOT IT");
-            step1.FadeInDuration = 0;
+            step1.FadeInDuration = 1000;
             var step2 = showcase.AddStep(mButtonTwo, "This is button two", "GOT IT");
             step2.FadeInDuration = 1000;
             step2.Delay = 500;
@@ -65,7 +65,8 @@ namespace AppShowcaseSample
             step3.Delay = 500;
 
             var showcaseView = AppShowcaseView.CreateShowcase(this, showcase);
-            showcaseView.AnimationFactory = new BouncyAnimationFactory();
+            showcaseView.AnimationFactory = new AnticipateOvershootAnimationFactory();
+            showcaseView.AnimateInitialStep = !initial;
             showcaseView.Show();
         }
     }
