@@ -4,9 +4,9 @@ using Android.Graphics;
 using Android.Views;
 using Android.Views.Animations;
 
-namespace AppExtras.ShowcaseAnimations
+namespace AppExtras.Renderers
 {
-    public static class AnimationFactoryHelpers
+    internal static class RenderingHelpers
     {
         public const string AlphaPropertyName = "alpha";
         public const float InvisibleValue = 0f;

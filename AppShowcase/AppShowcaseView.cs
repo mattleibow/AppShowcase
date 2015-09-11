@@ -1,15 +1,15 @@
 using System;
-using Android.Views;
+using Android.Animation;
 using Android.App;
 using Android.Content;
-using Android.Widget;
 using Android.Graphics;
 using Android.OS;
 using Android.Util;
+using Android.Views;
+using Android.Widget;
 
-using AppExtras.ShowcaseAnimations;
+using AppExtras.Renderers;
 using AppExtras.Showcases;
-using Android.Animation;
 
 namespace AppExtras
 {
@@ -20,18 +20,18 @@ namespace AppExtras
         private Bitmap maskBitmap;
         private Canvas maskCanvas;
 
-        private View mContentBox;
-        private TextView mContentTextView;
-        private TextView mDismissButton;
-        private GravityFlags mGravity;
-        private int mContentBottomMargin;
-        private int mContentTopMargin;
-        private IAnimationFactory animationFactory;
-        private ValueAnimator fadeInValueAnimator;
-        private ValueAnimator fadeOutValueAnimator;
+        private View contentContainer;
+        private TextView contentView;
+        private TextView dismissView;
+        private GravityFlags contentGravity;
+        private int contentBottomMargin;
+        private int contentTopMargin;
 
-        private Handler mHandler;
+        private IRenderer animationFactory;
+        private Animator animator;
+
         private LayoutListener layoutListener;
+        private Handler handler;
 
         private Showcase currentShowcase;
 
@@ -41,34 +41,33 @@ namespace AppExtras
             Setup(context);
         }
 
-        public AppShowcaseView(Context context, IAttributeSet attrs)
-            : base(context, attrs)
-        {
-            Setup(context);
-        }
-
-        public AppShowcaseView(Context context, IAttributeSet attrs, int defStyleAttr)
-            : base(context, attrs, defStyleAttr)
-        {
-            Setup(context);
-        }
-
-        // TODO: @TargetApi(android.os.Build.VERSION_CODES.LOLLIPOP) 
-        public AppShowcaseView(Context context, IAttributeSet attrs, int defStyleAttr, int defStyleRes)
-            : base(context, attrs, defStyleAttr, defStyleRes)
-        {
-            Setup(context);
-        }
+        //public AppShowcaseView(Context context, IAttributeSet attrs)
+        //    : base(context, attrs)
+        //{
+        //    Setup(context);
+        //}
+        //
+        //public AppShowcaseView(Context context, IAttributeSet attrs, int defStyleAttr)
+        //    : base(context, attrs, defStyleAttr)
+        //{
+        //    Setup(context);
+        //}
+        //
+        //// TODO: @TargetApi(android.os.Build.VERSION_CODES.LOLLIPOP) 
+        //public AppShowcaseView(Context context, IAttributeSet attrs, int defStyleAttr, int defStyleRes)
+        //    : base(context, attrs, defStyleAttr, defStyleRes)
+        //{
+        //    Setup(context);
+        //}
 
         private void Setup(Context context)
         {
-            mHandler = new Handler();
             AnimateInitialStep = true;
-
+            handler = new Handler();
+            Visibility = ViewStates.Invisible;
             SetWillNotDraw(false);
-
-            // create our animation factory
-            animationFactory = new FadeAnimationFactory();
+            // create our default animation factory
+            animationFactory = new FadeRenderer();
 
             // make sure we add a global layout listener so we can adapt to changes
             AttachLayoutListener();
@@ -76,26 +75,22 @@ namespace AppExtras
             // consume touch events
             Touch += (sender, e) =>
             {
-                if (CurrentStep.DismissOnTouch)
+                if (e.Event.Action == MotionEventActions.Up && CurrentStep.DismissOnTouch)
                 {
                     DismissStep();
                 }
                 e.Handled = true;
             };
 
-            Visibility = ViewStates.Invisible;
-
             View contentView = LayoutInflater.From(Context).Inflate(Resource.Layout.showcase_content, this, true);
-            mContentBox = contentView.FindViewById(Resource.Id.content_box);
-            mContentTextView = contentView.FindViewById<TextView>(Resource.Id.tv_content);
-            mDismissButton = contentView.FindViewById<TextView>(Resource.Id.tv_dismiss);
-            mDismissButton.Click += delegate
+            contentContainer = contentView.FindViewById(Resource.Id.content_box);
+            this.contentView = contentView.FindViewById<TextView>(Resource.Id.tv_content);
+            dismissView = contentView.FindViewById<TextView>(Resource.Id.tv_dismiss);
+            dismissView.Click += delegate
             {
                 DismissStep();
             };
         }
-
-        public bool AutoRemoveOnCompletion { get; set; }
 
         public bool AnimateInitialStep { get; set; }
 
@@ -107,18 +102,27 @@ namespace AppExtras
 
         public ShowcaseStep CurrentStep
         {
-            get { return CurrentShowcase.CurrentStep; }
+            get { return CurrentShowcase == null ? null : CurrentShowcase.CurrentStep; }
         }
 
-        public IAnimationFactory AnimationFactory
+        public int CurrentStepIndex
+        {
+            get { return CurrentShowcase == null ? -1 : CurrentShowcase.CurrentStepIndex; }
+        }
+
+        public IRenderer Animation
         {
             get { return animationFactory; }
-            set { animationFactory = value ?? new NullAnimationFactory(); }
+            set { animationFactory = value ?? new NullRenderer(); }
         }
 
-        public event EventHandler ShowcaseDisplayed;
+        public event EventHandler ShowcaseStarted;
 
-        public event EventHandler ShowcaseDismissed;
+        public event EventHandler<ShowcaseStepEventArgs> StepDisplayed;
+
+        public event EventHandler<ShowcaseStepEventArgs> StepDismissed;
+
+        public event EventHandler ShowcaseCompleted;
 
         /// <summary>
         /// Interesting drawing stuff.
@@ -160,9 +164,7 @@ namespace AppExtras
             maskCanvas.DrawColor(Color.Transparent, PorterDuff.Mode.Clear);
 
             // ask the animator to draw the mask
-            float? fadeInValue = fadeInValueAnimator != null ? (float?)fadeInValueAnimator.AnimatedValue : null;
-            float? fadeOutValue = fadeOutValueAnimator != null ? (float?)fadeOutValueAnimator.AnimatedValue : null;
-            animationFactory.DrawMask(this, maskCanvas, CurrentStep.MaskColor, CurrentStep.Position, CurrentStep.Radius, fadeInValue, fadeOutValue);
+            animationFactory.DrawMask(this, maskCanvas, CurrentStep.MaskColor, CurrentStep.Position, CurrentStep.Radius, animator);
 
             // Draw the bitmap on our views  canvas.
             canvas.DrawBitmap(maskBitmap, 0, 0, null);
@@ -182,71 +184,87 @@ namespace AppExtras
             DetachLayoutListener();
         }
 
-        protected virtual void OnShowcaseDisplayed()
+        protected virtual void OnShowcaseStarted()
         {
-            var handler = ShowcaseDisplayed;
+            var handler = ShowcaseStarted;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);
             }
         }
 
-        protected virtual void OnShowcaseDismissed()
+        protected virtual void OnStepDisplayed(ShowcaseStepEventArgs e)
         {
-            var handler = ShowcaseDismissed;
+            var handler = StepDisplayed;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnStepDismissed(ShowcaseStepEventArgs e)
+        {
+            var handler = StepDismissed;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnShowcaseCompleted()
+        {
+            var handler = ShowcaseCompleted;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);
             }
         }
 
-        public static AppShowcaseView CreateShowcase(Activity activity)
+        public static AppShowcaseView Create(Activity activity)
         {
             var showcase = new AppShowcaseView(activity);
             ((ViewGroup)activity.Window.DecorView).AddView(showcase);
             return showcase;
         }
 
-        public static AppShowcaseView CreateShowcase(Activity activity, Showcase showcase)
+        public static AppShowcaseView Create(Activity activity, Showcase showcase)
         {
-            var showcaseView = CreateShowcase(activity);
+            var showcaseView = Create(activity);
             showcaseView.CurrentShowcase = showcase;
             return showcaseView;
         }
 
-        public static void ResetShowcase(Activity activity, string showcaseId)
+        public static AppShowcaseView Create(Activity activity, View targetView, string content, string dismissText)
         {
-            ResetShowcase(activity, new Showcase(showcaseId));
+            return Create(activity, Showcase.Create(targetView, content, dismissText));
         }
 
-        public static void ResetShowcase(Activity activity, Showcase showcase)
+        public static AppShowcaseView Create(Activity activity, int targetViewId, string content, string dismissText)
         {
-            showcase.Reset(activity);
-        }
-
-        public static void ResetAllShowcases(Activity activity)
-        {
-            Showcase.ResetAll(activity);
+            return Create(activity, Showcase.Create(activity, targetViewId, content, dismissText));
         }
 
         /// <summary>
-        /// Reveal the showcaseview. 
-        /// Returns a boolean telling us whether we actually did show anything
+        /// Reveal the AppShowcaseView after a delay. 
         /// </summary>
+        public void Show(long delay)
+        {
+            handler.PostDelayed(() => Show(), delay);
+        }
+
+        /// <summary>
+        /// Reveal the AppShowcaseView.
+        /// </summary>
+        /// <returns><c>true</c> if the view did show something, <c>false</c> otherwise.</returns>
         public bool Show()
         {
             // if we're in single use mode and have already shot our bolt then do nothing
-            if (CurrentShowcase.IsRunOnce)
+            if (CurrentShowcase == null || CurrentShowcase.HasFired(Context))
             {
-                if (CurrentShowcase.HasFired(Context))
-                {
-                    return false;
-                }
-                else
-                {
-                    CurrentShowcase.SetFired(Context, true);
-                }
+                return false;
             }
+
+            OnShowcaseStarted();
 
             // See if we have started this showcase before, if so then skip to the point we reached before
             // instead of showing the user everything from the start
@@ -263,6 +281,7 @@ namespace AppExtras
             }
             else
             {
+                OnStepDismissed(new ShowcaseStepEventArgs(CurrentStepIndex, CurrentStep));
                 ShowNext();
             }
         }
@@ -271,22 +290,23 @@ namespace AppExtras
         {
             Visibility = ViewStates.Invisible;
 
-            fadeInValueAnimator = animationFactory.FadeInView(this, CurrentStep.FadeInDuration, () =>
+            animator = animationFactory.FadeInView(this, CurrentStep.FadeInDuration, () =>
             {
                 Visibility = ViewStates.Visible;
-                OnShowcaseDisplayed();
+                OnStepDisplayed(new ShowcaseStepEventArgs(CurrentStepIndex, CurrentStep));
             }, () =>
             {
-                fadeInValueAnimator = null;
+                animator = null;
             });
         }
 
         public void FadeOut()
         {
-            fadeOutValueAnimator = animationFactory.FadeOutView(this, CurrentStep.FadeOutDuration, null, () =>
+            animator = animationFactory.FadeOutView(this, CurrentStep.FadeOutDuration, null, () =>
             {
-                fadeOutValueAnimator = null;
+                animator = null;
                 Visibility = ViewStates.Invisible;
+                OnStepDismissed(new ShowcaseStepEventArgs(CurrentStepIndex, CurrentStep));
                 ShowNext();
             });
         }
@@ -298,19 +318,20 @@ namespace AppExtras
 
         private bool ShowNext(bool animate)
         {
+            if (CurrentShowcase == null)
+            {
+                return false;
+            }
+
             var next = CurrentShowcase.NextStep(Context);
             if (next != null)
             {
-                mContentTextView.Text = next.ContentText;
-                mContentTextView.SetTextColor(next.ContentTextColor);
-                mDismissButton.Text = next.DismissText;
-                mDismissButton.SetTextColor(next.DismissTextColor);
-
+                UpdateShowcaseContent(next);
                 LayoutShowcaseContent();
 
                 if (CurrentStep.Delay > 0 && animate)
                 {
-                    mHandler.PostDelayed(() =>
+                    handler.PostDelayed(() =>
                     {
                         ShowCurrentStep(animate);
                     }, CurrentStep.Delay);
@@ -324,14 +345,14 @@ namespace AppExtras
             }
             else
             {
-                if (AutoRemoveOnCompletion)
+                var parent = Parent as ViewGroup;
+                if (parent != null)
                 {
-                    var parent = Parent as ViewGroup;
-                    if (parent != null)
-                    {
-                        parent.RemoveView(this);
-                    }
+                    parent.RemoveView(this);
                 }
+
+                OnShowcaseCompleted();
+
                 return false;
             }
         }
@@ -345,8 +366,16 @@ namespace AppExtras
             else
             {
                 Visibility = ViewStates.Visible;
-                OnShowcaseDisplayed();
+                OnStepDisplayed(new ShowcaseStepEventArgs(CurrentStepIndex, CurrentStep));
             }
+        }
+
+        private void UpdateShowcaseContent(ShowcaseStep next)
+        {
+            contentView.Text = next.ContentText;
+            contentView.SetTextColor(next.ContentTextColor);
+            dismissView.Text = next.DismissText;
+            dismissView.SetTextColor(next.DismissTextColor);
         }
 
         private void LayoutShowcaseContent()
@@ -365,45 +394,45 @@ namespace AppExtras
             if (yPos > midPoint)
             {
                 // value is in lower half of screen, we'll sit above it
-                mContentTopMargin = 0;
-                mContentBottomMargin = (height - yPos) + CurrentStep.Radius;
-                mGravity = GravityFlags.Bottom;
+                contentTopMargin = 0;
+                contentBottomMargin = (height - yPos) + CurrentStep.Radius;
+                contentGravity = GravityFlags.Bottom;
             }
             else
             {
                 // value is in upper half of screen, we'll sit below it
-                mContentTopMargin = yPos + CurrentStep.Radius;
-                mContentBottomMargin = 0;
-                mGravity = GravityFlags.Top;
+                contentTopMargin = yPos + CurrentStep.Radius;
+                contentBottomMargin = 0;
+                contentGravity = GravityFlags.Top;
             }
-            if (mContentBox != null && mContentBox.LayoutParameters != null)
+            if (contentContainer != null && contentContainer.LayoutParameters != null)
             {
-                FrameLayout.LayoutParams contentLP = (LayoutParams)mContentBox.LayoutParameters;
+                FrameLayout.LayoutParams contentLP = (LayoutParams)contentContainer.LayoutParameters;
 
                 bool layoutParamsChanged = false;
 
-                if (contentLP.BottomMargin != mContentBottomMargin)
+                if (contentLP.BottomMargin != contentBottomMargin)
                 {
-                    contentLP.BottomMargin = mContentBottomMargin;
+                    contentLP.BottomMargin = contentBottomMargin;
                     layoutParamsChanged = true;
                 }
 
-                if (contentLP.TopMargin != mContentTopMargin)
+                if (contentLP.TopMargin != contentTopMargin)
                 {
-                    contentLP.TopMargin = mContentTopMargin;
+                    contentLP.TopMargin = contentTopMargin;
                     layoutParamsChanged = true;
                 }
 
-                if (contentLP.Gravity != mGravity)
+                if (contentLP.Gravity != contentGravity)
                 {
-                    contentLP.Gravity = mGravity;
+                    contentLP.Gravity = contentGravity;
                     layoutParamsChanged = true;
                 }
 
                 // Only apply the layout params if we've actually changed them, otherwise we'll get stuck in a layout loop
                 if (layoutParamsChanged)
                 {
-                    mContentBox.LayoutParameters = contentLP;
+                    contentContainer.LayoutParameters = contentLP;
                 }
             }
         }
@@ -419,7 +448,6 @@ namespace AppExtras
             }
             animationFactory = null;
             maskCanvas = null;
-            mHandler = null;
 
             // free event handlers
             DetachLayoutListener();
@@ -437,14 +465,7 @@ namespace AppExtras
         {
             if (layoutListener != null)
             {
-                if (Build.VERSION.SdkInt < BuildVersionCodes.JellyBean)
-                {
-                    ViewTreeObserver.RemoveOnGlobalLayoutListener(layoutListener);
-                }
-                else
-                {
-                    ViewTreeObserver.RemoveOnGlobalLayoutListener(layoutListener);
-                }
+                ViewTreeObserver.RemoveGlobalOnLayoutListener(layoutListener);
                 layoutListener = null;
             }
         }

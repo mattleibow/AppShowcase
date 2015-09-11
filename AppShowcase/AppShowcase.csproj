@@ -13,7 +13,7 @@
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
-    <TargetFrameworkVersion>v5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0.3</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\AppShowcase.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\AppShowcase.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
@@ -41,14 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Animations\AnimationFactoryHelpers.cs" />
-    <Compile Include="Animations\NullAnimationFactory.cs" />
-    <Compile Include="Animations\AnticipateOvershootAnimationFactory.cs" />
+    <Compile Include="Renderers\AnimationHelpers.cs" />
+    <Compile Include="Renderers\NullRenderer.cs" />
+    <Compile Include="Renderers\AnticipateOvershootRenderer.cs" />
+    <Compile Include="ShowcaseStepEventArgs.cs" />
     <Compile Include="Showcases\ShowcaseStep.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Animations\FadeAnimationFactory.cs" />
-    <Compile Include="Animations\IAnimationFactory.cs" />
+    <Compile Include="Renderers\FadeRenderer.cs" />
+    <Compile Include="Renderers\IRenderer.cs" />
     <Compile Include="Showcases\ViewShowcaseStep.cs" />
     <Compile Include="Showcases\ShowcasePreferences.cs" />
     <Compile Include="AppShowcaseView.cs" />

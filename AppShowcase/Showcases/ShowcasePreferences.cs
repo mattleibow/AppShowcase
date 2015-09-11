@@ -2,17 +2,17 @@ using Android.Content;
 
 namespace AppExtras.Showcases
 {
-    public static class ShowcasePreferences
+    internal static class ShowcasePreferences
     {
-        public static int SEQUENCE_NEVER_STARTED = -1;
-        public static int SEQUENCE_FINISHED = int.MaxValue;
+        private const int SequenceNeverStarted = -1;
+        private const int SequenceFinished = int.MaxValue;
 
-        private const string PREFS_NAME = "appshowcase_showcases";
-        private const string STATUS = "status_";
+        private const string PreferencesName = "appshowcase_showcases";
+        private const string StatusKeyPart = "status_";
 
         private static ISharedPreferences GetPreferences(Context context)
         {
-            return context.GetSharedPreferences(PREFS_NAME, FileCreationMode.Private);
+            return context.GetSharedPreferences(PreferencesName, FileCreationMode.Private);
         }
 
         public static bool HasFired(Context context, string showcaseId)
@@ -22,7 +22,7 @@ namespace AppExtras.Showcases
                 return false;
             }
 
-            return GetStatus(context, showcaseId) == SEQUENCE_FINISHED;
+            return GetStatus(context, showcaseId) == SequenceFinished;
         }
 
         public static void SetFired(Context context, string showcaseId, bool value)
@@ -32,17 +32,17 @@ namespace AppExtras.Showcases
                 return;
             }
 
-            SetStatus(context, showcaseId, value ? SEQUENCE_FINISHED : SEQUENCE_NEVER_STARTED);
+            SetStatus(context, showcaseId, value ? SequenceFinished : SequenceNeverStarted);
         }
 
         public static int GetStatus(Context context, string showcaseId)
         {
             if (context == null || showcaseId == null)
             {
-                return SEQUENCE_NEVER_STARTED;
+                return SequenceNeverStarted;
             }
 
-            return GetPreferences(context).GetInt(STATUS + showcaseId, SEQUENCE_NEVER_STARTED);
+            return GetPreferences(context).GetInt(StatusKeyPart + showcaseId, SequenceNeverStarted);
         }
 
         public static void SetStatus(Context context, string showcaseId, int value)
@@ -52,7 +52,7 @@ namespace AppExtras.Showcases
                 return;
             }
 
-            GetPreferences(context).Edit().PutInt(STATUS + showcaseId, value).Apply();
+            GetPreferences(context).Edit().PutInt(StatusKeyPart + showcaseId, value).Apply();
         }
 
         public static void Reset(Context context, string showcaseId)
@@ -62,7 +62,7 @@ namespace AppExtras.Showcases
                 return;
             }
 
-            GetPreferences(context).Edit().PutInt(STATUS + showcaseId, SEQUENCE_NEVER_STARTED).Apply();
+            GetPreferences(context).Edit().PutInt(StatusKeyPart + showcaseId, SequenceNeverStarted).Apply();
         }
 
         public static void ResetAll(Context context)

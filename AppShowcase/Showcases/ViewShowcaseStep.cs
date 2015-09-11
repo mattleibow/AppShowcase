@@ -1,29 +1,37 @@
 using System;
-using Android.Views;
 using Android.App;
+using Android.Content;
 using Android.Graphics;
+using Android.Views;
 
 namespace AppExtras.Showcases
 {
     public class ViewShowcaseStep : ShowcaseStep
     {
-        private readonly View view;
+        private const int DefaultPadding = 10;
+
+        private WeakReference<Activity> parentActivity;
+        private int viewId;
+        private View view;
 
         public ViewShowcaseStep(View view)
         {
             this.view = view;
+
             Setup();
         }
 
         public ViewShowcaseStep(Activity activity, int viewId)
         {
-            view = activity.FindViewById(viewId);
+            this.parentActivity = new WeakReference<Activity>(activity);
+            this.viewId = viewId;
+
             Setup();
         }
 
         private void Setup()
         {
-            Padding = 10;
+            Padding = DefaultPadding;
             UseAutoRadius = true;
         }
 
@@ -33,16 +41,17 @@ namespace AppExtras.Showcases
         {
             get
             {
-                var position = base.Position;
+                var view = GetView();
                 if (view != null)
                 {
                     int[] location = new int[2];
                     view.GetLocationInWindow(location);
                     int x = location[0] + view.Width / 2;
                     int y = location[1] + view.Height / 2;
-                    position = new Point(x, y);
+                    return new Point(x, y);
                 }
-                return position;
+
+                return base.Position;
             }
             set { base.Position = value; }
         }
@@ -53,15 +62,30 @@ namespace AppExtras.Showcases
         {
             get
             {
-                int radius = base.Radius;
+                var view = GetView();
                 if (view != null && UseAutoRadius)
                 {
-                    radius = Math.Max(view.MeasuredHeight, view.MeasuredWidth) / 2;
+                    var radius = Math.Max(view.MeasuredHeight, view.MeasuredWidth) / 2;
                     radius += Padding; // add a 10 pixel padding to circle
+                    return radius;
                 }
-                return radius;
+
+                return base.Radius;
             }
             set { base.Radius = value; }
+        }
+
+        private View GetView()
+        {
+            if (view == null)
+            {
+                Activity activity;
+                if (parentActivity != null && parentActivity.TryGetTarget(out activity))
+                {
+                    view = activity.FindViewById(viewId);
+                }
+            }
+            return view;
         }
     }
 }

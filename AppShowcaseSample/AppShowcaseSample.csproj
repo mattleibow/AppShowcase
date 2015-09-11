@@ -35,6 +35,20 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
+    <AndroidLinkSkip />
+    <AndroidLinkMode>Full</AndroidLinkMode>
+    <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+    <BundleAssemblies>False</BundleAssemblies>
+    <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+    <AndroidSupportedAbis>armeabi,armeabi-v7a,x86,x86_64,arm64-v8a</AndroidSupportedAbis>
+    <AndroidStoreUncompressedFileExtensions />
+    <MandroidI18n />
+    <Debugger>Xamarin</Debugger>
+    <AotAssemblies>False</AotAssemblies>
+    <EnableLLVM>False</EnableLLVM>
+    <AndroidEnableMultiDex>False</AndroidEnableMultiDex>
+    <EnableProguard>False</EnableProguard>
+    <DevInstrumentationEnabled>False</DevInstrumentationEnabled>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
@@ -54,13 +68,12 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleSingleExample.cs" />
-    <Compile Include="CustomActivity.cs" />
-    <Compile Include="ShowcaseActivity.cs" />
+    <Compile Include="MainFragment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Properties\AndroidManifest.xml" />
+    <AndroidResource Include="Resources\layout\FragmentLayout.axml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AppShowcase\AppShowcase.csproj">
@@ -72,19 +85,12 @@
     <Folder Include="Assets\" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\values\Strings.xml" />
+    <AndroidResource Include="Resources\values\strings.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\activity_custom_example.axml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\activity_main.axml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\activity_sequence_example.axml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\activity_simple_single_example.axml" />
+    <AndroidResource Include="Resources\layout\MainLayout.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-hdpi\ic_launcher.png" />
@@ -102,13 +108,10 @@
     <AndroidResource Include="Resources\values\colors.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\values\dimens.xml" />
+    <AndroidResource Include="Resources\menu\OptionsMenu.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\values\styles.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\values-w820dp\dimens.xml" />
+    <AndroidResource Include="Resources\menu\FragmentOptionsMenu.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

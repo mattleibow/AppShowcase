@@ -1,4 +1,7 @@
 <resources>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+  <string name="addAction">Add</string>
+  <string name="settingsAction">Settings</string>
+  <string name="customizedAction">Customized Showcase</string>
+  <string name="resetAction">Reset</string>
+  <string name="closeAction">Close</string>
 </resources>

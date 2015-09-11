@@ -1137,12 +1137,6 @@ namespace AppShowcaseSample
 			// aapt resource value: 0x7f060005
 			public const int abc_text_size_title_material_toolbar = 2131099653;
 			
-			// aapt resource value: 0x7f060045
-			public const int activity_horizontal_margin = 2131099717;
-			
-			// aapt resource value: 0x7f060046
-			public const int activity_vertical_margin = 2131099718;
-			
 			// aapt resource value: 0x7f060008
 			public const int dialog_fixed_height_major = 2131099656;
 			
@@ -1379,8 +1373,8 @@ namespace AppShowcaseSample
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f0b0058
-			public const int action0 = 2131427416;
+			// aapt resource value: 0x7f0b0052
+			public const int action0 = 2131427410;
 			
 			// aapt resource value: 0x7f0b0040
 			public const int action_bar = 2131427392;
@@ -1406,8 +1400,8 @@ namespace AppShowcaseSample
 			// aapt resource value: 0x7f0b0041
 			public const int action_context_bar = 2131427393;
 			
-			// aapt resource value: 0x7f0b005c
-			public const int action_divider = 2131427420;
+			// aapt resource value: 0x7f0b0056
+			public const int action_divider = 2131427414;
 			
 			// aapt resource value: 0x7f0b0002
 			public const int action_menu_divider = 2131427330;
@@ -1427,6 +1421,9 @@ namespace AppShowcaseSample
 			// aapt resource value: 0x7f0b0026
 			public const int activity_chooser_view_content = 2131427366;
 			
+			// aapt resource value: 0x7f0b0063
+			public const int addMenuItem = 2131427427;
+			
 			// aapt resource value: 0x7f0b0030
 			public const int alertTitle = 2131427376;
 			
@@ -1436,44 +1433,20 @@ namespace AppShowcaseSample
 			// aapt resource value: 0x7f0b0013
 			public const int beginning = 2131427347;
 			
-			// aapt resource value: 0x7f0b0052
-			public const int btn_custom_example = 2131427410;
-			
-			// aapt resource value: 0x7f0b0055
-			public const int btn_one = 2131427413;
-			
-			// aapt resource value: 0x7f0b0050
-			public const int btn_reset = 2131427408;
-			
-			// aapt resource value: 0x7f0b0054
-			public const int btn_reset_all = 2131427412;
-			
-			// aapt resource value: 0x7f0b004f
-			public const int btn_show = 2131427407;
-			
-			// aapt resource value: 0x7f0b0053
-			public const int btn_showcase_example = 2131427411;
-			
-			// aapt resource value: 0x7f0b0051
-			public const int btn_simple_example = 2131427409;
-			
-			// aapt resource value: 0x7f0b0057
-			public const int btn_three = 2131427415;
-			
-			// aapt resource value: 0x7f0b0056
-			public const int btn_two = 2131427414;
-			
 			// aapt resource value: 0x7f0b0036
 			public const int buttonPanel = 2131427382;
 			
-			// aapt resource value: 0x7f0b0059
-			public const int cancel_action = 2131427417;
+			// aapt resource value: 0x7f0b0053
+			public const int cancel_action = 2131427411;
 			
 			// aapt resource value: 0x7f0b0038
 			public const int checkbox = 2131427384;
 			
-			// aapt resource value: 0x7f0b005f
-			public const int chronometer = 2131427423;
+			// aapt resource value: 0x7f0b0059
+			public const int chronometer = 2131427417;
+			
+			// aapt resource value: 0x7f0b0062
+			public const int closeMenuItem = 2131427426;
 			
 			// aapt resource value: 0x7f0b0017
 			public const int collapseActionView = 2131427351;
@@ -1481,14 +1454,17 @@ namespace AppShowcaseSample
 			// aapt resource value: 0x7f0b0031
 			public const int contentPanel = 2131427377;
 			
-			// aapt resource value: 0x7f0b0065
-			public const int content_box = 2131427429;
+			// aapt resource value: 0x7f0b005f
+			public const int content_box = 2131427423;
 			
 			// aapt resource value: 0x7f0b0035
 			public const int custom = 2131427381;
 			
 			// aapt resource value: 0x7f0b0034
 			public const int customPanel = 2131427380;
+			
+			// aapt resource value: 0x7f0b004f
+			public const int customizedButton = 2131427407;
 			
 			// aapt resource value: 0x7f0b003e
 			public const int decor_content_parent = 2131427390;
@@ -1511,14 +1487,17 @@ namespace AppShowcaseSample
 			// aapt resource value: 0x7f0b0014
 			public const int end = 2131427348;
 			
-			// aapt resource value: 0x7f0b0064
-			public const int end_padder = 2131427428;
+			// aapt resource value: 0x7f0b005e
+			public const int end_padder = 2131427422;
 			
 			// aapt resource value: 0x7f0b0027
 			public const int expand_activities_button = 2131427367;
 			
 			// aapt resource value: 0x7f0b0037
 			public const int expanded_menu = 2131427383;
+			
+			// aapt resource value: 0x7f0b0051
+			public const int fragmentContainer = 2131427409;
 			
 			// aapt resource value: 0x7f0b0004
 			public const int home = 2131427332;
@@ -1535,14 +1514,14 @@ namespace AppShowcaseSample
 			// aapt resource value: 0x7f0b0028
 			public const int image = 2131427368;
 			
-			// aapt resource value: 0x7f0b0063
-			public const int info = 2131427427;
-			
 			// aapt resource value: 0x7f0b005d
-			public const int line1 = 2131427421;
+			public const int info = 2131427421;
 			
-			// aapt resource value: 0x7f0b0061
-			public const int line3 = 2131427425;
+			// aapt resource value: 0x7f0b0057
+			public const int line1 = 2131427415;
+			
+			// aapt resource value: 0x7f0b005b
+			public const int line3 = 2131427419;
 			
 			// aapt resource value: 0x7f0b0009
 			public const int listMode = 2131427337;
@@ -1550,8 +1529,8 @@ namespace AppShowcaseSample
 			// aapt resource value: 0x7f0b002a
 			public const int list_item = 2131427370;
 			
-			// aapt resource value: 0x7f0b005b
-			public const int media_actions = 2131427419;
+			// aapt resource value: 0x7f0b0055
+			public const int media_actions = 2131427413;
 			
 			// aapt resource value: 0x7f0b0015
 			public const int middle = 2131427349;
@@ -1579,6 +1558,9 @@ namespace AppShowcaseSample
 			
 			// aapt resource value: 0x7f0b003a
 			public const int radio = 2131427386;
+			
+			// aapt resource value: 0x7f0b0050
+			public const int resetButton = 2131427408;
 			
 			// aapt resource value: 0x7f0b001f
 			public const int screen = 2131427359;
@@ -1619,6 +1601,9 @@ namespace AppShowcaseSample
 			// aapt resource value: 0x7f0b004e
 			public const int select_dialog_listview = 2131427406;
 			
+			// aapt resource value: 0x7f0b0064
+			public const int settionsMenuItem = 2131427428;
+			
 			// aapt resource value: 0x7f0b0039
 			public const int shortcut = 2131427385;
 			
@@ -1643,8 +1628,8 @@ namespace AppShowcaseSample
 			// aapt resource value: 0x7f0b0022
 			public const int src_over = 2131427362;
 			
-			// aapt resource value: 0x7f0b005a
-			public const int status_bar_latest_event_content = 2131427418;
+			// aapt resource value: 0x7f0b0054
+			public const int status_bar_latest_event_content = 2131427412;
 			
 			// aapt resource value: 0x7f0b004b
 			public const int submit_area = 2131427403;
@@ -1652,17 +1637,17 @@ namespace AppShowcaseSample
 			// aapt resource value: 0x7f0b000b
 			public const int tabMode = 2131427339;
 			
-			// aapt resource value: 0x7f0b0062
-			public const int text = 2131427426;
+			// aapt resource value: 0x7f0b005c
+			public const int text = 2131427420;
 			
-			// aapt resource value: 0x7f0b0060
-			public const int text2 = 2131427424;
+			// aapt resource value: 0x7f0b005a
+			public const int text2 = 2131427418;
 			
 			// aapt resource value: 0x7f0b0033
 			public const int textSpacerNoButtons = 2131427379;
 			
-			// aapt resource value: 0x7f0b005e
-			public const int time = 2131427422;
+			// aapt resource value: 0x7f0b0058
+			public const int time = 2131427416;
 			
 			// aapt resource value: 0x7f0b002c
 			public const int title = 2131427372;
@@ -1673,11 +1658,11 @@ namespace AppShowcaseSample
 			// aapt resource value: 0x7f0b002e
 			public const int topPanel = 2131427374;
 			
-			// aapt resource value: 0x7f0b0066
-			public const int tv_content = 2131427430;
+			// aapt resource value: 0x7f0b0060
+			public const int tv_content = 2131427424;
 			
-			// aapt resource value: 0x7f0b0067
-			public const int tv_dismiss = 2131427431;
+			// aapt resource value: 0x7f0b0061
+			public const int tv_dismiss = 2131427425;
 			
 			// aapt resource value: 0x7f0b0008
 			public const int up = 2131427336;
@@ -1808,55 +1793,49 @@ namespace AppShowcaseSample
 			public const int abc_simple_dropdown_hint = 2130903064;
 			
 			// aapt resource value: 0x7f030019
-			public const int activity_custom_example = 2130903065;
+			public const int FragmentLayout = 2130903065;
 			
 			// aapt resource value: 0x7f03001a
-			public const int activity_main = 2130903066;
+			public const int MainLayout = 2130903066;
 			
 			// aapt resource value: 0x7f03001b
-			public const int activity_sequence_example = 2130903067;
+			public const int notification_media_action = 2130903067;
 			
 			// aapt resource value: 0x7f03001c
-			public const int activity_simple_single_example = 2130903068;
+			public const int notification_media_cancel_action = 2130903068;
 			
 			// aapt resource value: 0x7f03001d
-			public const int notification_media_action = 2130903069;
+			public const int notification_template_big_media = 2130903069;
 			
 			// aapt resource value: 0x7f03001e
-			public const int notification_media_cancel_action = 2130903070;
+			public const int notification_template_big_media_narrow = 2130903070;
 			
 			// aapt resource value: 0x7f03001f
-			public const int notification_template_big_media = 2130903071;
+			public const int notification_template_lines = 2130903071;
 			
 			// aapt resource value: 0x7f030020
-			public const int notification_template_big_media_narrow = 2130903072;
+			public const int notification_template_media = 2130903072;
 			
 			// aapt resource value: 0x7f030021
-			public const int notification_template_lines = 2130903073;
+			public const int notification_template_part_chronometer = 2130903073;
 			
 			// aapt resource value: 0x7f030022
-			public const int notification_template_media = 2130903074;
+			public const int notification_template_part_time = 2130903074;
 			
 			// aapt resource value: 0x7f030023
-			public const int notification_template_part_chronometer = 2130903075;
+			public const int select_dialog_item_material = 2130903075;
 			
 			// aapt resource value: 0x7f030024
-			public const int notification_template_part_time = 2130903076;
+			public const int select_dialog_multichoice_material = 2130903076;
 			
 			// aapt resource value: 0x7f030025
-			public const int select_dialog_item_material = 2130903077;
+			public const int select_dialog_singlechoice_material = 2130903077;
 			
 			// aapt resource value: 0x7f030026
-			public const int select_dialog_multichoice_material = 2130903078;
+			public const int showcase_content = 2130903078;
 			
 			// aapt resource value: 0x7f030027
-			public const int select_dialog_singlechoice_material = 2130903079;
-			
-			// aapt resource value: 0x7f030028
-			public const int showcase_content = 2130903080;
-			
-			// aapt resource value: 0x7f030029
-			public const int support_simple_spinner_dropdown_item = 2130903081;
+			public const int support_simple_spinner_dropdown_item = 2130903079;
 			
 			static Layout()
 			{
@@ -1864,6 +1843,25 @@ namespace AppShowcaseSample
 			}
 			
 			private Layout()
+			{
+			}
+		}
+		
+		public partial class Menu
+		{
+			
+			// aapt resource value: 0x7f0c0000
+			public const int FragmentOptionsMenu = 2131492864;
+			
+			// aapt resource value: 0x7f0c0001
+			public const int OptionsMenu = 2131492865;
+			
+			static Menu()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Menu()
 			{
 			}
 		}
@@ -1922,11 +1920,20 @@ namespace AppShowcaseSample
 			// aapt resource value: 0x7f050010
 			public const int abc_toolbar_collapse_description = 2131034128;
 			
-			// aapt resource value: 0x7f050013
-			public const int action_settings = 2131034131;
-			
 			// aapt resource value: 0x7f050012
-			public const int hello_world = 2131034130;
+			public const int addAction = 2131034130;
+			
+			// aapt resource value: 0x7f050016
+			public const int closeAction = 2131034134;
+			
+			// aapt resource value: 0x7f050014
+			public const int customizedAction = 2131034132;
+			
+			// aapt resource value: 0x7f050015
+			public const int resetAction = 2131034133;
+			
+			// aapt resource value: 0x7f050013
+			public const int settingsAction = 2131034131;
 			
 			// aapt resource value: 0x7f050011
 			public const int status_bar_notification_info_overflow = 2131034129;
@@ -1955,9 +1962,6 @@ namespace AppShowcaseSample
 			
 			// aapt resource value: 0x7f070076
 			public const int Animation_AppCompat_DropDownUp = 2131165302;
-			
-			// aapt resource value: 0x7f070124
-			public const int AppTheme = 2131165476;
 			
 			// aapt resource value: 0x7f070077
 			public const int Base_AlertDialog_AppCompat = 2131165303;

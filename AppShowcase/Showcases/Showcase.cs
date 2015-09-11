@@ -29,12 +29,12 @@ namespace AppExtras.Showcases
             steps = new List<ShowcaseStep>();
         }
 
-        public int CurrentStepIndex
+        internal int CurrentStepIndex
         {
             get { return position; }
         }
 
-        public ShowcaseStep CurrentStep
+        internal ShowcaseStep CurrentStep
         {
             get
             {
@@ -44,11 +44,6 @@ namespace AppExtras.Showcases
                 }
                 return null;
             }
-        }
-
-        public bool IsRunOnce
-        {
-            get { return ShowcaseId == null; }
         }
 
         public string ShowcaseId { get; set; }
@@ -79,6 +74,68 @@ namespace AppExtras.Showcases
             return step;
         }
 
+        public ShowcaseStep AddStep(View targetView, string content, string dismissText, long duration)
+        {
+            ShowcaseStep step = new ViewShowcaseStep(targetView)
+            {
+                DismissText = dismissText,
+                ContentText = content,
+                FadeInDuration = duration,
+                FadeOutDuration = duration
+            };
+
+            AddStep(step);
+
+            return step;
+        }
+
+        public ShowcaseStep AddStep(Activity activity, int targetViewId, string content, string dismissText, long duration)
+        {
+            ShowcaseStep step = new ViewShowcaseStep(activity, targetViewId)
+            {
+                DismissText = dismissText,
+                ContentText = content,
+                FadeInDuration = duration,
+                FadeOutDuration = duration
+            };
+
+            AddStep(step);
+
+            return step;
+        }
+
+        public ShowcaseStep AddStep(View targetView, string content, string dismissText, long duration, long delay)
+        {
+            ShowcaseStep step = new ViewShowcaseStep(targetView)
+            {
+                DismissText = dismissText,
+                ContentText = content,
+                FadeInDuration = duration,
+                FadeOutDuration = duration,
+                Delay = delay
+            };
+
+            AddStep(step);
+
+            return step;
+        }
+
+        public ShowcaseStep AddStep(Activity activity, int targetViewId, string content, string dismissText, long duration, long delay)
+        {
+            ShowcaseStep step = new ViewShowcaseStep(activity, targetViewId)
+            {
+                DismissText = dismissText,
+                ContentText = content,
+                FadeInDuration = duration,
+                FadeOutDuration = duration,
+                Delay = delay
+            };
+
+            AddStep(step);
+
+            return step;
+        }
+
         public ShowcaseStep AddStep(ShowcaseStep step)
         {
             steps.Add(step);
@@ -86,19 +143,19 @@ namespace AppExtras.Showcases
             return step;
         }
 
-        public bool HasFired(Context context)
+        internal bool HasFired(Context context)
         {
             return ShowcasePreferences.HasFired(context, ShowcaseId);
         }
 
-        public void SetFired(Context context, bool value)
+        internal void SetFired(Context context, bool value)
         {
             ShowcasePreferences.SetFired(context, ShowcaseId, value);
         }
 
-        public void Reset(Context context)
+        public static void Reset(Context context, string showcaseId)
         {
-            ShowcasePreferences.Reset(context, ShowcaseId);
+            ShowcasePreferences.Reset(context, showcaseId);
         }
 
         public static void ResetAll(Context context)
@@ -106,12 +163,12 @@ namespace AppExtras.Showcases
             ShowcasePreferences.ResetAll(context);
         }
 
-        public void LastStep(Context context)
+        internal void LastStep(Context context)
         {
             position = Math.Max(-1, ShowcasePreferences.GetStatus(context, ShowcaseId) - 1);
         }
 
-        public ShowcaseStep NextStep(Context context)
+        internal ShowcaseStep NextStep(Context context)
         {
             if (position >= -1 && position < steps.Count - 1)
             {
@@ -125,6 +182,34 @@ namespace AppExtras.Showcases
             }
 
             return null;
+        }
+
+        public static Showcase Create(string showcaseId, View targetView, string content, string dismissText)
+        {
+            var showcase = new Showcase(showcaseId);
+            showcase.AddStep(targetView, content, dismissText);
+            return showcase;
+        }
+
+        public static Showcase Create(string showcaseId, Activity activity, int targetViewId, string content, string dismissText)
+        {
+            var showcase = new Showcase(showcaseId);
+            showcase.AddStep(activity, targetViewId, content, dismissText);
+            return showcase;
+        }
+
+        public static Showcase Create(View targetView, string content, string dismissText)
+        {
+            var showcase = new Showcase();
+            showcase.AddStep(targetView, content, dismissText);
+            return showcase;
+        }
+
+        public static Showcase Create(Activity activity, int targetViewId, string content, string dismissText)
+        {
+            var showcase = new Showcase();
+            showcase.AddStep(activity, targetViewId, content, dismissText);
+            return showcase;
         }
     }
 }
